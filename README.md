@@ -1,2 +1,1 @@
-# LearningJ
-Learning Repo
+# Backend Challenges boilerplate - package.json
