@@ -1,7 +1,9 @@
 #Notes:
 =======
-- GET => Gets data from client
-- POST => Sends data to client 
-- PUT => Updates resources
-- DELETE =>
+- POST => Create data to client (Create)
+- GET => Read data from client (Read)
+- PUT => Update resources (Update)
+- DELETE => Delete resources (Delete)
+
+
   
