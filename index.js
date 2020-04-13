@@ -35,6 +35,8 @@ app.post('/api/courses', (req, res) => {
   res.send(course);
 });
 
+app.put();
+
 app.get('/api/courses/:id', (req, res) => {
   const course = courses.find((c) => c.id === parseInt(req.params.id));
   if (!course)
