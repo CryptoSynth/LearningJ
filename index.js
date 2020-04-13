@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const express = require('express');
 const app = express();
 
@@ -7,7 +7,7 @@ app.use(express.json());
 const courses = [
   { id: 1, name: 'course1' },
   { id: 2, name: 'course2' },
-  { id: 3, name: 'course3' },
+  { id: 3, name: 'course3' }
 ];
 
 //GET
@@ -29,7 +29,7 @@ app.post('/api/courses', (req, res) => {
 
   const course = {
     id: courses.length + 1,
-    name: req.body.name,
+    name: req.body.name
   };
 
   courses.push(course);
@@ -64,7 +64,7 @@ app.delete('/api/courses/:id', (req, res) => {
 //function validation
 function validateCourse(course) {
   const schema = {
-    name: Joi.string().min(3).required(),
+    name: Joi.string().min(3).required()
   };
 
   return Joi.validate(course, schema);
