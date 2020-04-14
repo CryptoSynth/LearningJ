@@ -1,4 +1,5 @@
 //Module Imports
+const debug = require('debug')('app:startup');
 const config = require('config');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -26,7 +27,7 @@ app.use(express.static('public'));
 app.use(helmet());
 if (app.get('env') === 'development') {
   app.use(morgan('tiny')); //only for development
-  console.log('Mogan enabled...');
+  debug('Mogan enabled...');
 }
 
 //install custom middleware function
