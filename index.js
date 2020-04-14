@@ -1,8 +1,37 @@
+//Module Imports
+const config = require('config');
+const helmet = require('helmet');
+const morgan = require('morgan');
 const Joi = require('@hapi/joi');
+const logger = require('./logger');
+const auth = require('./authentication');
 const express = require('express');
 const app = express();
 
+//configuration
+console.log(`Application Name: ${config.get('name')}`);
+console.log(`Mail Server: ${config.get('mail.host')}`);
+console.log(`Mail Password: ${config.get('mail.password')}`);
+
+//Port
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Listening on port ${port}...`));
+
+//install built in express middleware function
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
+
+//install third party middleware function
+app.use(helmet());
+if (app.get('env') === 'development') {
+  app.use(morgan('tiny')); //only for development
+  console.log('Mogan enabled...');
+}
+
+//install custom middleware function
+app.use(logger);
+app.use(auth);
 
 const courses = [
   { id: 1, name: 'course1' },
@@ -63,13 +92,9 @@ app.delete('/api/courses/:id', (req, res) => {
 
 //function validation
 function validateCourse(course) {
-  const schema = {
+  const schema = Joi.object({
     name: Joi.string().min(3).required()
-  };
+  });
 
-  return Joi.validate(course, schema);
+  return schema.validate(course);
 }
-
-// PORT
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Listening on port ${port}...`));
