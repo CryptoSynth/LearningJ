@@ -1,66 +1,63 @@
 const express = require('express');
-const Joi = require('@hapi/joi');
+const { Genre, validationRulesets } = require('../models/genre');
+
+//middlware handler
+const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
+
+//router handler
 const router = express.Router();
 
-const genres = [
-  { id: 1, category: 'horror' },
-  { id: 2, category: 'action' },
-  { id: 3, category: 'thriller' }
-];
-
 //GET
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
+  throw new Error('Something failed..');
+  const genres = await Genre.find().sort({ name: 1 });
   res.send(genres);
 });
 
-router.get('/:id', (req, res) => {
-  const genre = genres.find((e) => e.id === parseInt(req.params.id));
-  if (!genre) return res.status(400).send('Sorry, that genre does not exist!');
+router.get('/:id', async (req, res) => {
+  const genre = await Genre.findById(req.params.id);
+
+  if (!genre)
+    return res.status(400).send('The genre with the given ID does not exist!');
+
   res.send(genre);
 });
 
 //POST
-router.post('/', (req, res) => {
-  const { error } = valadationRuleset(req.body);
+router.post('/', auth, async (req, res) => {
+  const { error } = validationRulesets(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const addGenre = {
-    id: genres.length + 1,
-    category: req.body.category
-  };
+  const genre = new Genre({ name: req.body.name });
 
-  genres.push(addGenre);
-  res.send(addGenre);
+  await genre.save();
+  res.send(genre);
 });
 
 //PUT
-router.put('/:id', (req, res) => {
-  const genre = genres.find((e) => e.id === parseInt(req.params.id));
-  if (!genre) return res.status(400).send('Sorry, that genre does not exist!');
-
-  const { error } = valadationRuleset(req.body);
+router.put('/:id', auth, async (req, res) => {
+  const { error } = validationRulesets(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  genre.category = req.body.category;
+  const genre = await Genre.findByIdAndUpdate(
+    req.params.id,
+    { name: req.body.name },
+    { new: true }
+  );
+
+  if (!genre) return res.status(400).send('Sorry, that genre does not exist!');
+
   res.send(genre);
 });
 
 //DELETE
-router.delete('/:id', (req, res) => {
-  const genre = genres.find((e) => e.id === parseInt(req.params.id));
+router.delete('/:id', [auth, admin], async (req, res) => {
+  const genre = await Genre.findByIdAndRemove(req.params.id);
+
   if (!genre) return res.status(400).send('Sorry, that genre does not exist!');
 
-  const index = genres.indexOf(genre);
-  genres.splice(index, 1);
   res.send(genre);
 });
-
-//Validation Rulesets
-function valadationRuleset(genre) {
-  const schema = Joi.object({
-    category: Joi.string().min(3).required()
-  });
-  return schema.validate(genre);
-}
 
 module.exports = router;
