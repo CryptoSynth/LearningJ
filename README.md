@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# Backend Challenges boilerplate - package.json
-=======
 # Notes:
 - POST => Create data to client (Create)
 - GET => Read data from client (Read)
@@ -199,4 +196,3 @@
   - add "start": node index.js to package.json
   - add "engines": {"node": "v12.16.2"}
   - add source code to a GIT repo
->>>>>>> 356c09f3645a96bb0cc8d4e45243ad9c8cface6f
