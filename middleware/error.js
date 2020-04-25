@@ -1,0 +1,11 @@
+const winston = require('winston');
+
+function error(err, req, res, next) {
+  winston.log({
+    level: 'error',
+    message: err.message
+  });
+  res.status(500).send('Something failed.');
+}
+
+module.exports = error;
