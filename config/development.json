@@ -1,6 +1,5 @@
 {
-  "name": "My Express App - Development",
-  "mail": {
-    "host": "dev-mail-server"
-  }
+  "name": "My Development Vidly App - Development",
+  "jwtPrivateKey": "",
+  "db": "mongodb://localhost/vidly"
 }

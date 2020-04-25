@@ -4,22 +4,22 @@ const { Genre, validationRulesets } = require('../models/genre');
 //middlware handler
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
+const validateObjectId = require('../middleware/validateObjectId');
 
 //router handler
 const router = express.Router();
 
 //GET
 router.get('/', async (req, res) => {
-  throw new Error('Something failed..');
   const genres = await Genre.find().sort({ name: 1 });
   res.send(genres);
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', validateObjectId, async (req, res) => {
   const genre = await Genre.findById(req.params.id);
 
   if (!genre)
-    return res.status(400).send('The genre with the given ID does not exist!');
+    return res.status(404).send('The genre with the given ID does not exist!');
 
   res.send(genre);
 });

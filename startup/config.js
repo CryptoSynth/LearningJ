@@ -6,20 +6,12 @@ module.exports = function (app, winston) {
     level: 'info',
     message: `Application Name: ${config.get('name')}`
   });
-  winston.log({
-    level: 'info',
-    message: `Mail Server: ${config.get('mail.host')}`
-  });
-  if (!config.get('jwtPrivateKey')) {
-    throw new Error('FATAL ERROR: jwtPrivateKey is not defined.');
-  }
 
-  //Port
-  const port = process.env.PORT || 3000;
-  app.listen(port, () => {
+  if (!config.get('jwtPrivateKey')) {
     winston.log({
       level: 'info',
-      message: `Listening on port ${port}...`
+      message: config.get('jwtPrivateKey')
     });
-  });
+    throw new Error('FATAL ERROR: jwtPrivateKey is not defined.');
+  }
 };
