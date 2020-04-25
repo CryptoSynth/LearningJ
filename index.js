@@ -1,47 +1,21 @@
-const Joi = require('joi');
 const express = require('express');
+const winston = require('winston');
+// require('winston-mongodb');
 const app = express();
 
-app.use(express.json());
+require('./startup/logging')(winston);
+require('./startup/config')(app, winston);
+require('./startup/middleware')(app, winston, express);
+require('./startup/template')(app);
+require('./startup/database')();
+require('./startup/validation')();
+require('./startup/routes')(app);
+require('./startup/prod')(app);
 
-const courses = [
-  { id: 1, name: 'course1' },
-  { id: 2, name: 'course2' },
-  { id: 3, name: 'course3' },
-];
-
-app.get('/api/courses', (req, res) => {
-  res.send(courses);
+//Port
+const port = parseInt(process.env.PORT) || 3000;
+const server = app.listen(port, () => {
+  winston.info(`Listening on port ${port}...`);
 });
 
-app.post('/api/courses', (req, res) => {
-  const schema = {
-    name: Joi.string().min(3).required(),
-  };
-
-  const result = Joi.validate(req.body, schema);
-
-  if (result.error) {
-    res.status(400).send(result.error.details[0].message);
-    return;
-  }
-
-  const course = {
-    id: courses.length + 1,
-    name: req.body.name,
-  };
-
-  courses.push(course);
-  res.send(course);
-});
-
-app.get('/api/courses/:id', (req, res) => {
-  const course = courses.find((c) => c.id === parseInt(req.params.id));
-  if (!course)
-    res.status(404).send('The course with the given ID was not found!');
-  res.send(course);
-});
-
-// PORT
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Listening on port ${port}...`));
+module.exports = server;
