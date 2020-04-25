@@ -196,3 +196,5 @@
   - add "start": node index.js to package.json
   - add "engines": {"node": "v12.16.2"}
   - add source code to a GIT repo
+  - heroku create => creates an application and GIT remote
+  - git push heroku <branch>
