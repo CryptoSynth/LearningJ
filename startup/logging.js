@@ -4,17 +4,6 @@ const { format } = require('winston');
 const { combine, printf } = format;
 
 module.exports = function (winston) {
-  //subscribe to uncaughtExceptions FIX THROWING ERRORS
-  winston.exceptions.handle(
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: 'uncaughtExceptions.log' })
-  );
-
-  //subscribe to uncaugtRejections
-  process.on('unhandledRejection', (ex) => {
-    throw ex;
-  });
-
   //Format winston logging
   const myFormat = printf(({ level, message }) => {
     return `${level}: ${message}`;
@@ -31,6 +20,17 @@ module.exports = function (winston) {
         level: 'info'
       })
     ]
+  });
+
+  //subscribe to uncaughtExceptions FIX THROWING ERRORS
+  winston.exceptions.handle(
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'uncaughtExceptions.log' })
+  );
+
+  //subscribe to uncaugtRejections
+  process.on('unhandledRejection', (ex) => {
+    throw ex;
   });
 
   // winston.add(

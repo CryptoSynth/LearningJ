@@ -196,7 +196,6 @@
   - add "start": node index.js to package.json
   - add "engines": {"node": "v12.16.2"}
   - add source code to a GIT repo
-<<<<<<< HEAD
   - heroku create => creates an application and GIT remote
   - git push heroku <branch>
   - #### Push changes from local branch to master 
@@ -204,5 +203,3 @@
     - git pull               # to update the state to the latest remote master state
     - git merge develop      # to bring changes to local master from your develop branch
     - git push origin master # push current HEAD to remote master branch
-=======
->>>>>>> tmp
