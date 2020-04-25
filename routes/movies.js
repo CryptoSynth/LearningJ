@@ -59,7 +59,7 @@ router.put('/:id', async (req, res) => {
   const genre = Genre.findById(req.body.genreId);
   if (!genre) return res.status(404).send('Invalid genre.');
 
-  const movie = await Movie.findByIdAndUpdate(
+  const movie = await Movie.findOneAndUpdate(
     req.params.id,
     {
       title: req.body.title,
@@ -80,7 +80,7 @@ router.put('/:id', async (req, res) => {
 
 //DELETE
 router.delete('/:id', async (req, res) => {
-  const movie = await Movie.findByIdAndRemove(req.params.id);
+  const movie = await Movie.findOneAndRemove(req.params.id);
   if (!movie)
     return res.status(404).send('The movie with the given ID does not exist!');
   res.send(movie);

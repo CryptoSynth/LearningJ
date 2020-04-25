@@ -143,3 +143,56 @@
   - catching  promise rejections w/ winston 
 
 # Refactor Code to enterprise level:
+
+# Automated Testing => the practise of writing code to test our code and then run those tests in an automated fasion 
+- production code
+- test code
+- ### Types of Tests:
+  - Unit Test:
+    - Test a unit of an app without its *external dependcies*
+  - Integration Test:
+    - Tests the app with its *external dependcies* 
+  - End-TO-END Test:
+    - Drives an app through its UI 
+- ### Test Pyramid:
+  - (1) E2E
+  - (2) Integration
+  - (3) Unit 
+
+# Jest => npm i jest --save-dev
+- change package.json script property to jest 
+- With unit tests cover all execution paths 
+- put related tests in a describe block
+- when testing strings make sure test is not to specific 
+- jest --watchAll for continous live feed
+
+# Unit Testing
+- describe()
+- it()
+- mock functions
+- if you are using to many mock fucntions move to 
+- Integration testing 
+
+# Integration Test => npm i supertest --save-dev
+- TDD => Test Driven Development - test first, then code 
+
+# Deployment
+- Platform provides infrastructure (handles servers, load balancers, reverse processes, reload on a crash)
+  ### Platform Services:
+  - Heroku
+  - Google Cloud Platform
+  - AWS
+  - Azure
+  
+- Docker easily creates an image to your own server machine 
+
+- ### Prepare Application for Production
+  - install helmet to secure your code => npm i helmet
+  - install compression, compress the http req that is sent to client => npm i compression 
+- ### Heroku
+  - create an account 
+  - install heroku CLI
+  - heroku login (login in to heroku CLI)
+  - add "start": node index.js to package.json
+  - add "engines": {"node": "v12.16.2"}
+  - add source code to a GIT repo

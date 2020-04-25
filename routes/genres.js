@@ -36,7 +36,7 @@ router.post('/', auth, async (req, res) => {
 });
 
 //PUT
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', [auth, validateObjectId], async (req, res) => {
   const { error } = validationRulesets(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -46,14 +46,14 @@ router.put('/:id', auth, async (req, res) => {
     { new: true }
   );
 
-  if (!genre) return res.status(400).send('Sorry, that genre does not exist!');
+  if (!genre) return res.status(404).send('Sorry, that genre does not exist!');
 
   res.send(genre);
 });
 
 //DELETE
 router.delete('/:id', [auth, admin], async (req, res) => {
-  const genre = await Genre.findByIdAndRemove(req.params.id);
+  const genre = await Genre.findByIdAndDelete(req.params.id);
 
   if (!genre) return res.status(400).send('Sorry, that genre does not exist!');
 

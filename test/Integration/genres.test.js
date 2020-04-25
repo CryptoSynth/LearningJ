@@ -3,24 +3,22 @@ const { Genre } = require('../../models/genre');
 const { User } = require('../../models/user');
 const mongoose = require('mongoose');
 
-let server;
-
 describe('/api/genres', () => {
-  beforeEach(() => {
-    server = require('../../vidly');
-  });
+  let server;
+  beforeEach(() => (server = require('../../index')));
   afterEach(async () => {
-    server.close(); //close the server
+    await server.close(); //close the server
     await Genre.remove({}); //clean up database
   });
 
   describe('GET /', () => {
     it('should return all genres', async () => {
-      await Genre.collection.insertMany([
-        { name: 'genre1' },
-        { name: 'genre2' }
-      ]);
+      const genres = [{ name: 'genre1' }, { name: 'genre2' }];
+
+      await Genre.collection.insertMany(genres);
+
       const res = await request(server).get('/api/genres');
+
       expect(res.status).toBe(200);
       expect(res.body.length).toBe(2);
       expect(res.body.some((g) => g.name === 'genre1')).toBeTruthy();
@@ -44,7 +42,7 @@ describe('/api/genres', () => {
 
     it('if no genre with the given id exist should return 404', async () => {
       const id = mongoose.Types.ObjectId();
-      const res = await request(server).get(`/api/genres/${id}`);
+      const res = await request(server).get(`/api/genres/1`);
       expect(res.status).toBe(404);
     });
   });
@@ -93,6 +91,84 @@ describe('/api/genres', () => {
       const res = await exec();
       expect(res.body).toHaveProperty('_id');
       expect(res.body).toHaveProperty('name', 'genre1');
+    });
+  });
+
+  describe('PUT /:id', () => {
+    let token;
+    let newName;
+    let genre;
+    let id;
+
+    const exec = async () => {
+      return await request(server)
+        .put(`/api/genres/${id}`)
+        .set('x-auth-token', token)
+        .send({ name: newName });
+    };
+
+    beforeEach(async () => {
+      const genre = await new Genre({ name: 'testing123' });
+      await genre.save();
+
+      token = new User().generateAuthToken();
+      id = genre._id;
+      newName = 'testing123456';
+    });
+
+    it('should return 401 if client is not logged in', async () => {
+      token = '';
+
+      const res = await exec();
+
+      expect(res.status).toBe(401);
+    });
+
+    it('should return 400 if genre is less than 5 characters', async () => {
+      newName = '1234';
+
+      const res = await exec();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 400 if genre is more than 50 characters', async () => {
+      newName = new Array(52).join('a');
+
+      const res = await exec();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('if id is invalid should return 404', async () => {
+      id = '1';
+
+      const res = await exec();
+
+      expect(res.status).toBe(404);
+    });
+
+    it('if no genre with the given id exist should return 404', async () => {
+      id = mongoose.Types.ObjectId();
+
+      const res = await exec();
+
+      expect(res.status).toBe(404);
+    });
+
+    it('if id is valid should update the genre', async () => {
+      await exec();
+
+      const updatedGenre = await Genre.findById(id);
+
+      expect(updatedGenre.name).toBe(newName);
+    });
+
+    it('should return the updated genre if it is valid', async () => {
+      const res = await exec();
+
+      expect(res.body).toHaveProperty('_id');
+      expect(res.body).toHaveProperty('name', newName);
     });
   });
 });
