@@ -1,7 +1,4 @@
 {
-<<<<<<< HEAD
-  "name": "fcc-learn-npm-package-json"
-=======
   "name": "express-demo",
   "version": "1.0.0",
   "description": "",
@@ -41,5 +38,4 @@
     "jest": "^25.4.0",
     "supertest": "^4.0.2"
   }
->>>>>>> 356c09f3645a96bb0cc8d4e45243ad9c8cface6f
 }
