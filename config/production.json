@@ -1,0 +1,5 @@
+{
+  "name": "My Production Express App - Production",
+  "jwtPrivateKey": "",
+  "db": "mongodb://localhost/vidly"
+}
